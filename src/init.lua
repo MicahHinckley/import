@@ -1,0 +1,77 @@
+--< Variables >--
+local Modules = {}
+
+--< Functions >--
+local function GetInstanceFromPath(path, root)
+    local Locations = string.split(path, "/")
+
+    local Index = 1
+    local CurrentLocation = root
+    local NextLocation = CurrentLocation:FindFirstChild(Locations[Index])
+
+    while NextLocation and Index ~= #Locations do
+        Index += 1
+        CurrentLocation = NextLocation
+        NextLocation = CurrentLocation:FindFirstChild(Locations[Index])
+    end
+
+    local LastLocation = Locations[#Locations]
+
+    -- If last location has a ? on the end, see if it is a descendant
+    if not NextLocation and string.sub(LastLocation, #LastLocation) == "?" then
+        local Location = string.sub(LastLocation, 1, #LastLocation - 1) -- Remove ?
+
+        NextLocation = Location:FindFirstChild(Location, true)
+    end
+
+    if not NextLocation then
+        error("Could not find instance at path `" .. path .. "`.")
+    end
+
+	return NextLocation
+end
+
+--< Module >--
+local Import = {}
+
+function Import.AddPath(name, root)
+    if Import[name] then
+        error("Cannot add an import path with name `" .. name .. "`.")
+    end
+
+    Import[name] = function(path)
+        return GetInstanceFromPath(path, root)
+    end
+end
+
+function Import.AddImportPath(name, root)
+    if Import[name] then
+        error("Cannot add an import path with name `" .. name .. "`.")
+    end
+
+    Import[name] = function(path)
+        return require(GetInstanceFromPath(path, root))
+    end
+end
+
+function Import.AddLocation(root)
+    for _,descendant in ipairs(root:GetDescendants()) do
+        if descendant:IsA("ModuleScript") and not descendant:FindFirstAncestorOfClass("ModuleScript") then
+            if Modules[descendant.Name] then
+                warn("Two or more modules with name `" .. descendant.Name .. "` already exist. Try renaming them.")
+            else
+                Modules[descendant.Name] = descendant
+            end
+        end
+    end
+end
+
+function Import.__call(_, name)
+    if Modules[name] then
+        return require(Modules[name])
+    else
+        error("Module `" .. name .. "` does not exist.")
+    end
+end
+
+return setmetatable(Import, Import)
