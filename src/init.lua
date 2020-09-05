@@ -24,10 +24,6 @@ local function GetInstanceFromPath(path, root)
         NextLocation = Location:FindFirstChild(Location, true)
     end
 
-    if not NextLocation then
-        error("Could not find instance at path `" .. path .. "`.")
-    end
-
 	return NextLocation
 end
 
@@ -40,7 +36,13 @@ function Import.AddPath(name, root)
     end
 
     Import[name] = function(path)
-        return GetInstanceFromPath(path, root)
+        local Result = GetInstanceFromPath(path, root)
+
+        if Result then
+            return Result
+        else
+            error("Could not find instance at path `" .. path .. "` in `" .. name .. "`.")
+        end
     end
 end
 
@@ -50,7 +52,13 @@ function Import.AddImportPath(name, root)
     end
 
     Import[name] = function(path)
-        return require(GetInstanceFromPath(path, root))
+        local Result = GetInstanceFromPath(path, root)
+
+        if Result then
+            return require(Result)
+        else
+            error("Could not find instance at path `" .. path .. "` in `" .. name .. "`.")
+        end
     end
 end
 
