@@ -1,3 +1,6 @@
+--< Services >--
+local RunService = game:GetService("RunService")
+
 --< Variables >--
 local Modules = {}
 
@@ -25,6 +28,15 @@ local function GetInstanceFromPath(path, root)
     end
 
 	return NextLocation
+end
+
+--< Function >--
+local function Require(name)
+    if Modules[name] then
+        return require(Modules[name])
+    else
+        error("Module `" .. name .. "` does not exist.")
+    end
 end
 
 --< Module >--
@@ -74,12 +86,20 @@ function Import.AddLocation(root)
     end
 end
 
-function Import.__call(_, name)
-    if Modules[name] then
-        return require(Modules[name])
-    else
-        error("Module `" .. name .. "` does not exist.")
+function Import.Client(name)
+    if RunService:IsClient() then
+        Require(name)
     end
+end
+
+function Import.Server(name)
+    if RunService:IsServer() then
+        Require(name)
+    end
+end
+
+function Import.__call(_, name)
+    Require(name)
 end
 
 return setmetatable(Import, Import)
