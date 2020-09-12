@@ -88,18 +88,18 @@ end
 
 function Import.Client(name)
     if RunService:IsClient() then
-        Require(name)
+        return Require(name)
     end
 end
 
 function Import.Server(name)
     if RunService:IsServer() then
-        Require(name)
+        return Require(name)
     end
 end
 
 function Import.__call(_, name)
-    Require(name)
+    return Require(name)
 end
 
 return setmetatable(Import, Import)
