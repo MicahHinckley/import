@@ -74,14 +74,20 @@ function Import.AddImportPath(name, root)
     end
 end
 
+function Import.AddModule(module)
+    if Modules[module.Name] == nil then
+        Modules[module.Name] = module
+    else
+        warn("Two or more modules with name `" .. module.Name .. "` already exist. Try renaming them.")
+    end
+end
+
 function Import.AddLocation(root)
-    for _,descendant in ipairs(root:GetDescendants()) do
-        if descendant:IsA("ModuleScript") and not descendant:FindFirstAncestorOfClass("ModuleScript") then
-            if Modules[descendant.Name] then
-                warn("Two or more modules with name `" .. descendant.Name .. "` already exist. Try renaming them.")
-            else
-                Modules[descendant.Name] = descendant
-            end
+    for _, child in ipairs(root:GetChildren()) do
+        if child:IsA("ModuleScript") then
+            Import.AddModule(child)
+        else
+            Import.AddLocation(child)
         end
     end
 end
