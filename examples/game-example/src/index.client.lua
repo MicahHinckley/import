@@ -1,18 +1,15 @@
---< Services >--
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
---< Modules >--
-local Import = require(ReplicatedStorage:WaitForChild("Import"))
+local import = require(ReplicatedStorage:WaitForChild("import"))
 
---< Start >---
-Import.AddLocation(ReplicatedStorage.Client)
-Import.AddLocation(ReplicatedStorage.Shared)
+import.addLocation(ReplicatedStorage.Client)
+import.addLocation(ReplicatedStorage.Shared)
 
-Import.AddPath("Resource", ReplicatedStorage.Resources)
+import.addPath("resource", ReplicatedStorage.Resources)
 
-Import("Hello")()
-Import("Bye")()
+import("Hello")()
+import("Bye")()
 
-print(Import.Resource("Assets/Part1"))
+print(import.resource("Assets/Part1"))
 
-Import.Resource("Assets/Part3")
+import.resource("Assets/Part3")

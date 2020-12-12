@@ -35,15 +35,14 @@ local function requireByName(name)
     end
 end
 
---< Module >--
-local Import = {}
+local import = {}
 
-function Import.addPath(name, root)
-    if Import[name] then
+function import.addPath(name, root)
+    if import[name] then
         error("Cannot add an import path with name `" .. name .. "`.")
     end
 
-    Import[name] = function(path)
+    import[name] = function(path)
         local result = getInstanceFromPath(path, root)
 
         if result then
@@ -54,12 +53,12 @@ function Import.addPath(name, root)
     end
 end
 
-function Import.addImportPath(name, root)
-    if Import[name] then
+function import.addImportPath(name, root)
+    if import[name] then
         error("Cannot add an import path with name `" .. name .. "`.")
     end
 
-    Import[name] = function(path)
+    import[name] = function(path)
         local result = getInstanceFromPath(path, root)
 
         if result then
@@ -70,7 +69,7 @@ function Import.addImportPath(name, root)
     end
 end
 
-function Import.addModule(module)
+function import.addModule(module)
     if modules[module.Name] == nil then
         modules[module.Name] = module
     else
@@ -78,30 +77,30 @@ function Import.addModule(module)
     end
 end
 
-function Import.addLocation(root)
+function import.addLocation(root)
     for _, child in ipairs(root:GetChildren()) do
         if child:IsA("ModuleScript") then
-            Import.addModule(child)
+            import.addModule(child)
         else
-            Import.addLocation(child)
+            import.addLocation(child)
         end
     end
 end
 
-function Import.client(name)
+function import.client(name)
     if RunService:IsClient() then
         return requireByName(name)
     end
 end
 
-function Import.server(name)
+function import.server(name)
     if RunService:IsServer() then
         return requireByName(name)
     end
 end
 
-function Import.__call(_, name)
+function import.__call(_, name)
     return requireByName(name)
 end
 
-return setmetatable(Import, Import)
+return setmetatable(import, import)

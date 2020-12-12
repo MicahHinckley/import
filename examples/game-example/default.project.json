@@ -6,7 +6,7 @@
     "ReplicatedStorage": {
       "$className": "ReplicatedStorage",
 
-      "Import": {
+      "import": {
         "$path": "../../src"
       },
 
