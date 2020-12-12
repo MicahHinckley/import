@@ -2,29 +2,29 @@
 
 Importing example:
 ```lua
-local Import = require(...)
+local import = require(...)
 
-Import.AddLocation(game.ReplicatedStorage.Source)
+import.addLocation(game.ReplicatedStorage.Source)
 
-Import("Hello") -- requires game.ReplicatedStorage.Source.Hello
+import("Hello") -- requires game.ReplicatedStorage.Source.Hello
 ```
 
 Importing instance at path example:
 ```lua
-local Import = require(...)
+local import = require(...)
 
-Import.AddPath("Asset", game.ReplicatedStorage.Assets)
+import.addPath("asset", game.ReplicatedStorage.Assets)
 
-Import.Asset("Images/Button") -- returns game.ReplicatedStorage.Assets.Images.Button
+import.asset("Images/Button") -- returns game.ReplicatedStorage.Assets.Images.Button
 ```
 
 Requiring module from path example:
 ```lua
-local Import = require(...)
+local import = require(...)
 
-Import.AddImportPath("Module", game.ReplicatedStorage.Modules)
+import.addImportPath("module", game.ReplicatedStorage.Modules)
 
-Import.Module("Extras/Bye") -- require game.ReplicatedStorage.Modules.Extras.Bye
+import.module("Extras/Bye") -- require game.ReplicatedStorage.Modules.Extras.Bye
 ```
 
 Extra tip:
