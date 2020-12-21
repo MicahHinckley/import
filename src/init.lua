@@ -28,7 +28,7 @@ local function getInstanceFromPath(path, root)
 end
 
 local function requireByName(name)
-    if modules[name] then
+    if modules[name] ~= nil then
         return require(modules[name])
     else
         error("Module `" .. name .. "` does not exist.")
@@ -38,14 +38,14 @@ end
 local import = {}
 
 function import.addPath(name, root)
-    if import[name] then
+    if import[name] ~= nil then
         error("Cannot add an import path with name `" .. name .. "`.")
     end
 
     import[name] = function(path)
         local result = getInstanceFromPath(path, root)
 
-        if result then
+        if result ~= nil then
             return result
         else
             error("Could not find instance at path `" .. path .. "` in `" .. name .. "`.")
@@ -54,14 +54,14 @@ function import.addPath(name, root)
 end
 
 function import.addImportPath(name, root)
-    if import[name] then
+    if import[name] ~= nil then
         error("Cannot add an import path with name `" .. name .. "`.")
     end
 
     import[name] = function(path)
         local result = getInstanceFromPath(path, root)
 
-        if result then
+        if result ~= nil then
             return require(result)
         else
             error("Could not find instance at path `" .. path .. "` in `" .. name .. "`.")
@@ -84,6 +84,14 @@ function import.addLocation(root)
         else
             import.addLocation(child)
         end
+    end
+end
+
+function import.descendant(parent, path)
+    local module = getInstanceFromPath(path, parent)
+
+    if module ~= nil then
+        return require(module)
     end
 end
 
